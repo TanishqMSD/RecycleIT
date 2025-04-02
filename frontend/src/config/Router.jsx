@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
-import Home from '../pages/home';
+import Home from '../pages/home/Home';
 import GameHome from '../pages/game';
 import SortingGame from '../pages/game/sorting';
 import AuthLayout from '../components/AuthLayout';
@@ -31,6 +31,8 @@ const router = createBrowserRouter([
         path: 'scan',
         element: <ScanPage />
       }
+      
+
     ]
   },
 ]);

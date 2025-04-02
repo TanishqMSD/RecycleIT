@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Battery Body -->
+  <rect x="80" y="100" width="240" height="200" rx="20" fill="#34495e" />
+  
+  <!-- Battery Terminal -->
+  <rect x="140" y="60" width="120" height="40" rx="5" fill="#2c3e50" />
+  
+  <!-- Warning Symbol -->
+  <path d="M200 140 l40 80 h-80 z" fill="#f1c40f" />
+  <text x="190" y="200" fill="black" font-size="40" font-weight="bold">!</text>
+  
+  <!-- Battery Level Indicators -->
+  <rect x="100" y="160" width="40" height="80" rx="5" fill="#e74c3c" opacity="0.8" />
+  <rect x="180" y="160" width="40" height="80" rx="5" fill="#e74c3c" opacity="0.8" />
+  <rect x="260" y="160" width="40" height="80" rx="5" fill="#e74c3c" opacity="0.8" />
+  
+  <!-- Hazard Label -->
+  <text x="140" y="280" fill="#ecf0f1" font-size="24" font-weight="bold">HAZARDOUS</text>
+</svg>

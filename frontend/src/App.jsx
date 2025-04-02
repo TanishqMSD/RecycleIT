@@ -1,28 +1,24 @@
-import { Outlet } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { auth } from './firebase/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { Routes, Route, Outlet } from 'react-router-dom';
+import { useState } from 'react';
 import Navbar from './components/Navbar';
 import ChatbotPopup from './components/ChatbotPopup';
 
+import AuthLayout from './components/AuthLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import { AuthProvider } from './contexts/AuthContext';
+
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar user={user} />
-      <main className="pt-0">
+    <AuthProvider>
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <AuthLayout/>
         <Outlet />
-      </main>
-      <ChatbotPopup />
-    </div>
+        <ChatbotPopup />
+        <AdminDashboard />
+      </div>
+    </AuthProvider>
   );
 };
 

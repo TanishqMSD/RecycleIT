@@ -1,7 +1,3 @@
-import AuthLayout from '../../components/AuthLayout';
-
-const AuthPage = () => {
-  return <AuthLayout />;
-};
+import AuthPage from './AuthPage';
 
 export default AuthPage;

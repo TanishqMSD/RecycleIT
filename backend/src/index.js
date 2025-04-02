@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './database/connection.js';
-import authRoutes from './routes/auth.routes.js';
+
 
 dotenv.config();
 
@@ -10,7 +10,12 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,8 +27,13 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to E-waste Management API' });
 });
 
-// Auth routes
-app.use('/api/auth', authRoutes);
+// Import routes
+import userRoutes from './routes/user.routes.js';
+
+// Use routes
+app.use('/api/users', userRoutes);
+
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,6 +1,6 @@
 // src/firebase/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, signInWithPhoneNumber, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyC5FvVF9IrKx1mbnph4prPetIA6W8Z6yE8",
@@ -21,15 +21,18 @@ googleProvider.setCustomParameters({
 
 const signInWithGoogle = async () => {
   try {
-    return await signInWithPopup(auth, googleProvider);
+    // First try redirect method to avoid COOP issues
+    await signInWithRedirect(auth, googleProvider);
+    const result = await getRedirectResult(auth);
+    return result;
   } catch (error) {
-    if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-blocked') {
-      console.log('Popup was blocked, trying redirect method...');
-      await signInWithRedirect(auth, googleProvider);
+    // If redirect fails, try popup as fallback
+    if (error.code === 'auth/operation-not-supported-in-this-environment') {
+      return await signInWithPopup(auth, googleProvider);
     } else {
       throw error;
     }
   }
 };
 
-export { auth, googleProvider, signInWithGoogle, getRedirectResult, signOut };
+export { auth, googleProvider, signInWithGoogle, getRedirectResult, signOut, signInWithPhoneNumber, onAuthStateChanged };

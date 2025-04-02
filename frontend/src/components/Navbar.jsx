@@ -66,16 +66,31 @@ const Navbar = () => {
               </NavigationMenuItem>
               
               <NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/quiz">
-                    <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname === '/quiz' ? 'bg-green-50 text-green-800' : ''} flex items-center gap-2`}>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                      </svg>
-                      Quiz & Game
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
+                <NavigationMenuTrigger>Games & Quiz</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4">
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link to="/quiz" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-green-50 hover:text-green-800 focus:bg-green-50 focus:text-green-800">
+                          <div className="text-sm font-medium leading-none">Knowledge Quiz</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-500">
+                            Test your knowledge about e-waste and recycling
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link to="/game/sorting" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-green-50 hover:text-green-800 focus:bg-green-50 focus:text-green-800">
+                          <div className="text-sm font-medium leading-none">Sorting Game</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-500">
+                            Learn to sort e-waste in an interactive 3D environment
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
@@ -143,6 +158,14 @@ const Navbar = () => {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <Link to="/admin">
+                  <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname.startsWith('/admin') ? 'bg-green-50 text-green-800' : ''}`}>
+                    Admin Dashboard
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -185,11 +208,15 @@ const Navbar = () => {
                 <Link to="/guides" className={`p-2 rounded-md ${location.pathname === '/guides' ? 'bg-green-50 text-green-800' : ''}`}>
                   Recycling Guides
                 </Link>
-                <Link to="/quiz" className={`p-2 rounded-md ${location.pathname === '/quiz' ? 'bg-green-50 text-green-800' : ''} flex items-center gap-2`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                  Quiz & Game
+                <Link to="/admin" className={`p-2 rounded-md ${location.pathname.startsWith('/admin') ? 'bg-green-50 text-green-800' : ''}`}>
+                  Admin Dashboard
+                </Link>
+                
+                <Link to="/quiz" className={`p-2 rounded-md ${location.pathname === '/quiz' ? 'bg-green-50 text-green-800' : ''}`}>
+                  Knowledge Quiz
+                </Link>
+                <Link to="/game/sorting" className={`p-2 rounded-md ${location.pathname === '/game/sorting' ? 'bg-green-50 text-green-800' : ''}`}>
+                  Sorting Game
                 </Link>
                 <Link to="/contact" className={`p-2 rounded-md ${location.pathname === '/contact' ? 'bg-green-50 text-green-800' : ''}`}>
                   Contact
