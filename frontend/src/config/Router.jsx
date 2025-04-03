@@ -5,31 +5,36 @@ import GameHome from '../pages/game';
 import SortingGame from '../pages/game/sorting';
 import AuthLayout from '../components/AuthLayout';
 import ScanPage from '../pages/scan';
+import Companies from '../pages/recyclers/Companies'; // Import the Companies component
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <App />,  // App component as the layout
     children: [
       {
-        path: '/',
+        path: '/',  // Home page
         element: <Home />
       },
       {
-        path: 'auth',
+        path: 'auth',  // Authentication page
         element: <AuthLayout />
       },
       {
-        path: 'game',
+        path: 'game',  // Game home page
         element: <GameHome />
       },
       {
-        path: 'game/sorting',
+        path: 'game/sorting',  // Sorting game page
         element: <SortingGame />
       },
       {
-        path: 'scan',
+        path: 'scan',  // Scan page
         element: <ScanPage />
+      },
+      {
+        path: 'recycler-locator',  // Recycler locator page
+        element: <Companies />  // Component to render for this path
       }
     ]
   },

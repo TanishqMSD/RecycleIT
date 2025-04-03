@@ -179,7 +179,7 @@ const Navbar = () => {
                 <Link to="/scan" className={`p-2 rounded-md ${location.pathname === '/scan' ? 'bg-green-50 text-green-800' : ''}`}>
                   AI Scanner
                 </Link>
-                <Link to="/recyclers" className={`p-2 rounded-md ${location.pathname === '/recyclers' ? 'bg-green-50 text-green-800' : ''}`}>
+                <Link to="/recycler-locator" className={`p-2 rounded-md ${location.pathname === '/recyclers' ? 'bg-green-50 text-green-800' : ''}`}>
                   Recycler Locator
                 </Link>
                 <Link to="/guides" className={`p-2 rounded-md ${location.pathname === '/guides' ? 'bg-green-50 text-green-800' : ''}`}>
