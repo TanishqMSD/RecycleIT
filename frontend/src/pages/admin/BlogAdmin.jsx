@@ -91,7 +91,7 @@ const BlogAdmin = () => {
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4 md:px-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Blog Posts</h2>
         <Button onClick={() => setShowForm(!showForm)}>
@@ -101,11 +101,11 @@ const BlogAdmin = () => {
 
       {showForm && (
         <Card className="mb-8">
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <form onSubmit={handleSubmit}>
-              <div className="grid gap-4 mb-4">
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium mb-1">Title</label>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="md:col-span-2">
+                  <label htmlFor="title" className="block text-sm font-medium mb-2">Title</label>
                   <Input
                     id="title"
                     name="title"
@@ -116,8 +116,8 @@ const BlogAdmin = () => {
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium mb-1">Description</label>
+                <div className="md:col-span-2">
+                  <label htmlFor="description" className="block text-sm font-medium mb-2">Description</label>
                   <Input
                     id="description"
                     name="description"
@@ -128,21 +128,21 @@ const BlogAdmin = () => {
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="content" className="block text-sm font-medium mb-1">Content</label>
+                <div className="md:col-span-2">
+                  <label htmlFor="content" className="block text-sm font-medium mb-2">Content</label>
                   <textarea
                     id="content"
                     name="content"
                     value={formData.content}
                     onChange={handleInputChange}
                     placeholder="Write your blog content here..."
-                    className="w-full min-h-[200px] p-2 border rounded-md"
+                    className="w-full min-h-[200px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="banner" className="block text-sm font-medium mb-1">Banner Image URL</label>
+                <div className="md:col-span-2">
+                  <label htmlFor="banner" className="block text-sm font-medium mb-2">Banner Image URL</label>
                   <Input
                     id="banner"
                     name="banner"
@@ -154,7 +154,7 @@ const BlogAdmin = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="tags" className="block text-sm font-medium mb-1">Tags</label>
+                  <label htmlFor="tags" className="block text-sm font-medium mb-2">Tags</label>
                   <Input
                     id="tags"
                     name="tags"
@@ -165,13 +165,13 @@ const BlogAdmin = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="status" className="block text-sm font-medium mb-1">Status</label>
+                  <label htmlFor="status" className="block text-sm font-medium mb-2">Status</label>
                   <select
                     id="status"
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   >
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
@@ -179,7 +179,7 @@ const BlogAdmin = () => {
                 </div>
               </div>
               
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-3 mt-6">
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
                 <Button type="submit">Save Blog</Button>
               </div>

@@ -3,8 +3,16 @@ import App from '../App';
 import Home from '../pages/home/Home';
 import GameHome from '../pages/game';
 import SortingGame from '../pages/game/sorting';
-import AuthLayout from '../components/AuthLayout';
-import ScanPage from '../pages/scan';
+import ScanPage from '../pages/scan/ScanPage';
+import AdminDashboard from '../pages/admin/AdminDashboard';
+import BlogAdmin from '../pages/admin/BlogAdmin';
+import CampaignAdmin from '../pages/admin/CampaignAdmin';
+import EmailCommunication from '../pages/admin/EmailCommunication';
+import StatsOverview from '../pages/admin/StatsOverview';
+import SecureRoute from '../pages/secure/SecureRoute';
+import AdminLogin from '../pages/admin/AdminLogin';
+import Campaigns from '../pages/campaigns/Campaigns';
+import Recyclers from '../pages/info/Recyclers';
 
 const router = createBrowserRouter([
   {
@@ -16,8 +24,36 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: 'auth',
-        element: <AuthLayout />
+        path: '/campaigns',
+        element: <Campaigns />
+      },
+      {
+        path: '/recyclers',
+        element: <Recyclers />
+      },
+      {
+        path: 'admin-dashboard',
+        element: <SecureRoute><AdminDashboard /></SecureRoute>
+      },
+      {
+        path: 'admin-dashboard/blog',
+        element: <SecureRoute><BlogAdmin /></SecureRoute>
+      },
+      {
+        path: 'admin-dashboard/campaign',
+        element: <SecureRoute><CampaignAdmin /></SecureRoute>
+      },
+      {
+        path: 'admin-dashboard/email',
+        element: <SecureRoute><EmailCommunication /></SecureRoute>
+      },
+      {
+        path: 'admin-dashboard/stats',
+        element: <SecureRoute><StatsOverview /></SecureRoute>
+      },
+      {
+        path: 'admin-control',
+        element: <AdminLogin />
       },
       {
         path: 'game',

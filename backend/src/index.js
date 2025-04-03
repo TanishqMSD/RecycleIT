@@ -27,11 +27,12 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to E-waste Management API' });
 });
 
-// Import routes
-import userRoutes from './routes/user.routes.js';
 
-// Use routes
-app.use('/api/users', userRoutes);
+import recyclerRoutes from './routes/recycler.routes.js';
+import campaignRoutes from './routes/campaign.routes.js';
+
+app.use('/api', recyclerRoutes);
+app.use('/api', campaignRoutes);
 
 
 

@@ -21,34 +21,32 @@ const CampaignAdmin = () => {
 
   // Fetch campaigns on component mount
   useEffect(() => {
-    // This would be replaced with an actual API call
-    setLoading(true);
-    // Simulating API call with timeout
-    setTimeout(() => {
-      setCampaigns([
-        {
-          _id: '1',
-          title: 'E-Waste Collection Drive',
-          description: 'Community e-waste collection event',
-          location: 'City Community Center',
-          startDate: '2024-02-15T10:00',
-          endDate: '2024-02-15T16:00',
-          status: 'upcoming',
-          createdAt: new Date().toISOString()
-        },
-        {
-          _id: '2',
-          title: 'Tech Recycling Workshop',
-          description: 'Learn about proper electronics disposal',
-          location: 'Public Library',
-          startDate: '2024-02-20T14:00',
-          endDate: '2024-02-20T16:00',
-          status: 'upcoming',
-          createdAt: new Date(Date.now() - 86400000).toISOString()
+    const fetchCampaigns = async () => {
+      try {
+        setLoading(true);
+        const adminToken = sessionStorage.getItem('isAdminAuthenticated');
+        if (!adminToken) {
+          throw new Error('Admin authentication not found');
         }
-      ]);
-      setLoading(false);
-    }, 1000);
+        const response = await fetch('http://localhost:3000/api/campaigns', {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setCampaigns(data);
+      } catch (error) {
+        console.error('Error fetching campaigns:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampaigns();
   }, []);
 
   const handleInputChange = (e) => {
@@ -59,29 +57,52 @@ const CampaignAdmin = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // This would be replaced with an actual API call
-    console.log('Submitting campaign:', formData);
-    
-    // Simulate successful submission
-    setCampaigns(prev => [{
-      _id: Date.now().toString(),
-      ...formData,
-      createdAt: new Date().toISOString()
-    }, ...prev]);
-    
-    // Reset form
-    setFormData({
-      title: '',
-      description: '',
-      location: '',
-      startDate: '',
-      endDate: '',
-      banner: '',
-      status: 'upcoming'
-    });
-    setShowForm(false);
+    try {
+      const adminToken = sessionStorage.getItem('isAdminAuthenticated');
+      if (!adminToken) {
+        alert('Please log in as admin first');
+        return;
+      }
+      const response = await fetch('http://localhost:3000/api/campaigns', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          location: formData.location,
+          date: formData.startDate,
+          endDate: formData.endDate,
+          banner: formData.banner,
+          status: formData.status
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const newCampaign = await response.json();
+      setCampaigns(prev => [newCampaign, ...prev]);
+      
+      // Reset form
+      setFormData({
+        title: '',
+        description: '',
+        location: '',
+        startDate: '',
+        endDate: '',
+        banner: '',
+        status: 'upcoming'
+      });
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error creating campaign:', error);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -96,7 +117,7 @@ const CampaignAdmin = () => {
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4 md:px-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Campaign Management</h2>
         <Button onClick={() => setShowForm(!showForm)}>
@@ -106,11 +127,11 @@ const CampaignAdmin = () => {
 
       {showForm && (
         <Card className="mb-8">
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <form onSubmit={handleSubmit}>
-              <div className="grid gap-4 mb-4">
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium mb-1">Title</label>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="md:col-span-2">
+                  <label htmlFor="title" className="block text-sm font-medium mb-2">Title</label>
                   <Input
                     id="title"
                     name="title"
@@ -121,21 +142,21 @@ const CampaignAdmin = () => {
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium mb-1">Description</label>
+                <div className="md:col-span-2">
+                  <label htmlFor="description" className="block text-sm font-medium mb-2">Description</label>
                   <textarea
                     id="description"
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
                     placeholder="Enter campaign description"
-                    className="w-full min-h-[100px] p-2 border rounded-md"
+                    className="w-full min-h-[100px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="location" className="block text-sm font-medium mb-1">Location</label>
+                <div className="md:col-span-2">
+                  <label htmlFor="location" className="block text-sm font-medium mb-2">Location</label>
                   <Input
                     id="location"
                     name="location"
@@ -146,34 +167,32 @@ const CampaignAdmin = () => {
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="startDate" className="block text-sm font-medium mb-1">Start Date & Time</label>
-                    <Input
-                      id="startDate"
-                      name="startDate"
-                      type="datetime-local"
-                      value={formData.startDate}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="endDate" className="block text-sm font-medium mb-1">End Date & Time</label>
-                    <Input
-                      id="endDate"
-                      name="endDate"
-                      type="datetime-local"
-                      value={formData.endDate}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+                <div>
+                  <label htmlFor="startDate" className="block text-sm font-medium mb-2">Start Date & Time</label>
+                  <Input
+                    id="startDate"
+                    name="startDate"
+                    type="datetime-local"
+                    value={formData.startDate}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
                 
                 <div>
-                  <label htmlFor="banner" className="block text-sm font-medium mb-1">Banner Image URL</label>
+                  <label htmlFor="endDate" className="block text-sm font-medium mb-2">End Date & Time</label>
+                  <Input
+                    id="endDate"
+                    name="endDate"
+                    type="datetime-local"
+                    value={formData.endDate}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label htmlFor="banner" className="block text-sm font-medium mb-2">Banner Image URL</label>
                   <Input
                     id="banner"
                     name="banner"
@@ -184,14 +203,14 @@ const CampaignAdmin = () => {
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="status" className="block text-sm font-medium mb-1">Status</label>
+                <div className="md:col-span-2">
+                  <label htmlFor="status" className="block text-sm font-medium mb-2">Status</label>
                   <select
                     id="status"
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   >
                     <option value="upcoming">Upcoming</option>
                     <option value="ongoing">Ongoing</option>
@@ -201,7 +220,7 @@ const CampaignAdmin = () => {
                 </div>
               </div>
               
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-3 mt-6">
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
                 <Button type="submit">Save Campaign</Button>
               </div>
@@ -211,42 +230,67 @@ const CampaignAdmin = () => {
       )}
 
       {loading ? (
-        <div className="text-center py-8">Loading campaigns...</div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardContent className="p-4">
+                <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       ) : campaigns.length > 0 ? (
         <ScrollArea className="h-[500px]">
           <div className="space-y-4">
             {campaigns.map((campaign) => (
-              <div key={campaign._id} className="p-4 border rounded-lg hover:bg-gray-50">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-medium">{campaign.title}</h3>
-                    <p className="text-sm text-gray-500">{campaign.description}</p>
-                    <div className="mt-2 space-y-1">
-                      <p className="text-sm">
-                        <span className="font-medium">Location:</span> {campaign.location}
-                      </p>
-                      <p className="text-sm">
-                        <span className="font-medium">Date:</span> {formatDate(campaign.startDate)} - {formatDate(campaign.endDate)}
-                      </p>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-400">{formatDate(campaign.createdAt)}</span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          campaign.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                          campaign.status === 'ongoing' ? 'bg-green-100 text-green-800' :
-                          campaign.status === 'completed' ? 'bg-gray-100 text-gray-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
-                          {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
-                        </span>
+              <Card key={campaign._id}>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-lg font-semibold">{campaign.title}</h3>
+                      <p className="text-gray-600 mt-1">{campaign.description}</p>
+                      <div className="mt-2 space-y-1 text-sm text-gray-500">
+                        <p>Location: {campaign.location}</p>
+                        <p>Start: {formatDate(campaign.date)}</p>
+                        <p>End: {formatDate(campaign.endDate)}</p>
+                        <p>Status: {campaign.status}</p>
                       </div>
                     </div>
+                    <div className="flex space-x-2">
+                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={async () => {
+                          try {
+                            const adminToken = sessionStorage.getItem('isAdminAuthenticated');
+                            if (!adminToken) {
+                              throw new Error('Admin authentication not found');
+                            }
+                            const response = await fetch(`http://localhost:3000/api/campaigns/${campaign._id}`, {
+                              method: 'DELETE',
+                              headers: {
+                                'Authorization': `Bearer ${adminToken}`,
+                                'Content-Type': 'application/json'
+                              }
+                            });
+                            if (!response.ok) {
+                              throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            setCampaigns(prev => prev.filter(c => c._id !== campaign._id));
+                          } catch (error) {
+                            console.error('Error deleting campaign:', error);
+                          }
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">Edit</Button>
-                    <Button variant="destructive" size="sm">Delete</Button>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </ScrollArea>

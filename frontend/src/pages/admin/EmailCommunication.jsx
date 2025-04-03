@@ -36,16 +36,16 @@ const EmailCommunication = () => {
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4 md:px-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Email Communication</h2>
       </div>
 
       <Card>
-        <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium mb-1">Subject</label>
+              <label htmlFor="subject" className="block text-sm font-medium mb-2">Subject</label>
               <Input
                 id="subject"
                 name="subject"
@@ -53,25 +53,26 @@ const EmailCommunication = () => {
                 onChange={handleInputChange}
                 placeholder="Enter email subject"
                 required
+                className="w-full"
               />
             </div>
 
             <div>
-              <label htmlFor="content" className="block text-sm font-medium mb-1">Content</label>
+              <label htmlFor="content" className="block text-sm font-medium mb-2">Content</label>
               <textarea
                 id="content"
                 name="content"
                 value={emailData.content}
                 onChange={handleInputChange}
                 placeholder="Write your email content here..."
-                className="w-full min-h-[200px] p-2 border rounded-md"
+                className="w-full min-h-[200px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
             </div>
 
             <div className="flex justify-end">
               <Button type="submit" disabled={sending}>
-                {sending ? 'Sending...' : 'Sent to All Users'}
+                {sending ? 'Sending...' : 'Send to All Users'}
               </Button>
             </div>
           </form>
