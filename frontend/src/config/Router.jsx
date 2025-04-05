@@ -9,10 +9,12 @@ import BlogAdmin from '../pages/admin/BlogAdmin';
 import CampaignAdmin from '../pages/admin/CampaignAdmin';
 import EmailCommunication from '../pages/admin/EmailCommunication';
 import StatsOverview from '../pages/admin/StatsOverview';
+import Analytics from '../pages/admin/Analytics';
 import SecureRoute from '../pages/secure/SecureRoute';
 import AdminLogin from '../pages/admin/AdminLogin';
 import Campaigns from '../pages/campaigns/Campaigns';
 import Recyclers from '../pages/info/Recyclers';
+import Blog from '../pages/Blog';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/recyclers',
         element: <Recyclers />
+      },
+      {
+        path: '/blog',
+        element: <Blog />
       },
       {
         path: 'admin-dashboard',
@@ -52,6 +58,10 @@ const router = createBrowserRouter([
         element: <SecureRoute><StatsOverview /></SecureRoute>
       },
       {
+        path: 'admin-dashboard/analytics',
+        element: <SecureRoute><Analytics /></SecureRoute>
+      },
+      {
         path: 'admin-control',
         element: <AdminLogin />
       },
@@ -67,8 +77,6 @@ const router = createBrowserRouter([
         path: 'scan',
         element: <ScanPage />
       }
-      
-
     ]
   },
 ]);

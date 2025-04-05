@@ -1,5 +1,5 @@
 // Simple authentication middleware for admin routes
-const authenticateUser = async (req, res, next) => {
+const isAuthenticated = async (req, res, next) => {
   try {
     // Get the authorization header
     const authHeader = req.headers.authorization;
@@ -31,4 +31,4 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-export { authenticateUser };
+export { isAuthenticated };

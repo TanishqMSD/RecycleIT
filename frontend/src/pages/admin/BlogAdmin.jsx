@@ -20,28 +20,28 @@ const BlogAdmin = () => {
 
   // Fetch blogs on component mount
   useEffect(() => {
-    // This would be replaced with an actual API call
-    setLoading(true);
-    // Simulating API call with timeout
-    setTimeout(() => {
-      setBlogs([
-        {
-          _id: '1',
-          title: 'Recycling Basics',
-          description: 'Learn the fundamentals of recycling',
-          status: 'published',
-          createdAt: new Date().toISOString()
-        },
-        {
-          _id: '2',
-          title: 'Plastic Waste Management',
-          description: 'How to properly manage plastic waste',
-          status: 'draft',
-          createdAt: new Date(Date.now() - 86400000).toISOString()
+    const fetchBlogs = async () => {
+      try {
+        const adminToken = sessionStorage.getItem('isAdminAuthenticated');
+        if (!adminToken) {
+          throw new Error('Admin authentication not found');
         }
-      ]);
-      setLoading(false);
-    }, 1000);
+        setLoading(true);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/blogs`, {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+        const data = await response.json();
+        setBlogs(data.blogs);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
   }, []);
 
   const handleInputChange = (e) => {
@@ -52,33 +52,47 @@ const BlogAdmin = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // This would be replaced with an actual API call
-    console.log('Submitting blog:', formData);
-    // Add tags as array
-    const blogData = {
-      ...formData,
-      tags: formData.tags.split(',').map(tag => tag.trim())
-    };
-    
-    // Simulate successful submission
-    setBlogs(prev => [{
-      _id: Date.now().toString(),
-      ...blogData,
-      createdAt: new Date().toISOString()
-    }, ...prev]);
-    
-    // Reset form
-    setFormData({
-      title: '',
-      description: '',
-      content: '',
-      banner: '',
-      tags: '',
-      status: 'published'
-    });
-    setShowForm(false);
+    try {
+      const adminToken = sessionStorage.getItem('isAdminAuthenticated');
+      if (!adminToken) {
+        throw new Error('Admin authentication not found');
+      }
+      const blogData = {
+        ...formData,
+        tags: formData.tags.split(',').map(tag => tag.trim())
+      };
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/blogs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
+        body: JSON.stringify(blogData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create blog');
+      }
+
+      const newBlog = await response.json();
+      setBlogs(prev => [newBlog, ...prev]);
+      
+      // Reset form
+      setFormData({
+        title: '',
+        description: '',
+        content: '',
+        banner: '',
+        tags: '',
+        status: 'published'
+      });
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error creating blog:', error);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -207,8 +221,51 @@ const BlogAdmin = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">Edit</Button>
-                    <Button variant="destructive" size="sm">Delete</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        setFormData({
+                          title: blog.title,
+                          description: blog.description,
+                          content: blog.content,
+                          banner: blog.banner,
+                          tags: blog.tags.join(','),
+                          status: blog.status
+                        });
+                        setShowForm(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={async () => {
+                        try {
+                          const adminToken = sessionStorage.getItem('isAdminAuthenticated');
+                          if (!adminToken) {
+                            throw new Error('Admin authentication not found');
+                          }
+                          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/blogs/${blog._id}`, {
+                            method: 'DELETE',
+                            headers: {
+                              'Authorization': `Bearer ${adminToken}`
+                            }
+                          });
+                          
+                          if (!response.ok) {
+                            throw new Error('Failed to delete blog');
+                          }
+                          
+                          setBlogs(prev => prev.filter(b => b._id !== blog._id));
+                        } catch (error) {
+                          console.error('Error deleting blog:', error);
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
                   </div>
                 </div>
               </div>

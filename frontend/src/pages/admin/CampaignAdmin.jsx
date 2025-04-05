@@ -28,7 +28,7 @@ const CampaignAdmin = () => {
         if (!adminToken) {
           throw new Error('Admin authentication not found');
         }
-        const response = await fetch('http://localhost:3000/api/campaigns', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/campaigns`, {
           headers: {
             'Authorization': `Bearer ${adminToken}`,
             'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ const CampaignAdmin = () => {
         alert('Please log in as admin first');
         return;
       }
-      const response = await fetch('http://localhost:3000/api/campaigns', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/campaigns`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${adminToken}`,
@@ -269,7 +269,7 @@ const CampaignAdmin = () => {
                             if (!adminToken) {
                               throw new Error('Admin authentication not found');
                             }
-                            const response = await fetch(`http://localhost:3000/api/campaigns/${campaign._id}`, {
+                            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/campaigns/${campaign._id}`, {
                               method: 'DELETE',
                               headers: {
                                 'Authorization': `Bearer ${adminToken}`,

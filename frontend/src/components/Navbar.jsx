@@ -83,9 +83,9 @@ const Navbar = () => {
                     <span>Recycling Guides</span>
                   </div>
                 </Link>
-                <Link to="/contact" className="block py-3 text-lg font-semibold hover:text-green-800 transition-colors">
+                <Link to="/blog" className="block py-3 text-lg font-semibold hover:text-green-800 transition-colors">
                   <div className="flex items-center space-x-3">
-                    <span>Contact</span>
+                    <span>Blog</span>
                   </div>
                 </Link>
                 <Link to="/about" className="block py-3 text-lg font-semibold hover:text-green-800 transition-colors">
@@ -106,7 +106,7 @@ const Navbar = () => {
             className="flex items-center"
           >
             <span className="text-2xl font-bold">
-              <span className="text-green-800">Renew</span>
+              <span className="text-green-800">Recycle</span>
               <span className="text-emerald-500">IT</span>
             </span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 ml-2 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -219,9 +219,9 @@ const Navbar = () => {
                   </NavigationMenuItem>
                   
                   <NavigationMenuItem>
-                    <Link to="/contact">
-                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname === '/contact' ? 'bg-green-50 text-green-800' : ''}`}>
-                        Contact
+                    <Link to="/blog">
+                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname === '/blog' ? 'bg-green-50 text-green-800' : ''}`}>
+                        Blog
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
@@ -249,9 +249,9 @@ const Navbar = () => {
                   </NavigationMenuItem>
                   
                   <NavigationMenuItem>
-                    <Link to="/admin/blogs">
-                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname.startsWith('/admin/blogs') ? 'bg-green-50 text-green-800' : ''}`}>
-                        Blogs
+                    <Link to="/blogs">
+                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname === '/blogs' ? 'bg-green-50 text-green-800' : ''}`}>
+                        Blog
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
@@ -313,8 +313,8 @@ const Navbar = () => {
                 <Link to="/game/sorting" className={`p-2 rounded-md ${location.pathname === '/game/sorting' ? 'bg-green-50 text-green-800' : ''}`}>
                   Sorting Game
                 </Link>
-                <Link to="/contact" className={`p-2 rounded-md ${location.pathname === '/contact' ? 'bg-green-50 text-green-800' : ''}`}>
-                  Contact
+                <Link to="/blog" className={`p-2 rounded-md ${location.pathname === '/blog' ? 'bg-green-50 text-green-800' : ''}`}>
+                  Blog
                 </Link>
 
               </div>

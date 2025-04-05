@@ -7,30 +7,45 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = credentials;
 
-    if (!username.trim() || !password.trim()) {
-      setError('Please enter both username and password');
-      return;
-    }
-
-    const envUsername = import.meta.env.VITE_USERNAME;
-    const envPassword = import.meta.env.VITE_PASSWORD;
-
-    if (username === envUsername && password === envPassword) {
-      // Generate a simple token for admin authentication
-      const adminToken = btoa(`${username}:${Date.now()}`);
-      sessionStorage.setItem('adminToken', adminToken);
-      sessionStorage.setItem('isAdminAuthenticated', 'true');
-      navigate('/admin-dashboard');
-    } else {
-      if (username !== envUsername) {
-        setError('Invalid username');
-      } else {
-        setError('Invalid password');
+    try {
+      // Input validation
+      if (!username.trim() || !password.trim()) {
+        setError('Please enter both username and password');
+        return;
       }
+
+      const envUsername = import.meta.env.VITE_USERNAME;
+      const envPassword = import.meta.env.VITE_PASSWORD;
+
+      // Credential validation
+      if (!envUsername || !envPassword) {
+        setError('Admin credentials not properly configured');
+        return;
+      }
+
+      if (username === envUsername && password === envPassword) {
+        // Generate a secure token with timestamp and random component
+        const timestamp = Date.now();
+        const randomComponent = Math.random().toString(36).substring(2);
+        const adminToken = btoa(`${username}:${timestamp}:${randomComponent}`);
+        
+        // Store authentication data
+        sessionStorage.setItem('adminToken', adminToken);
+        sessionStorage.setItem('isAdminAuthenticated', 'true');
+        sessionStorage.setItem('adminLoginTime', timestamp.toString());
+        
+        navigate('/admin-dashboard');
+      } else {
+        // Generic error message for security
+        setError('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('An error occurred during login. Please try again.')
     }
   };
 

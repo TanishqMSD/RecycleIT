@@ -48,7 +48,7 @@ const Companies = () => {
             setLoading(true);
             console.log("Fetching companies for location:", latitude, longitude);
             
-            const response = await fetch("http://localhost:3000/api/nearby", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/nearby`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
