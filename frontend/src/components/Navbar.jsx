@@ -249,22 +249,22 @@ const Navbar = () => {
                   </NavigationMenuItem>
                   
                   <NavigationMenuItem>
-                    <Link to="/blogs">
-                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname === '/blogs' ? 'bg-green-50 text-green-800' : ''}`}>
+                    <Link to="/admin-dashboard/blog">
+                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname === '/admin-dashboard/blog' ? 'bg-green-50 text-green-800' : ''}`}>
                         Blog
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <Link to="/admin/campaigns">
-                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname.startsWith('/admin/campaigns') ? 'bg-green-50 text-green-800' : ''}`}>
+                    <Link to="/admin-dashboard/campaign">
+                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname.startsWith('/admin-dashboard/campaign') ? 'bg-green-50 text-green-800' : ''}`}>
                         Campaigns
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <Link to="/admin/email">
-                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname.startsWith('/admin/email') ? 'bg-green-50 text-green-800' : ''}`}>
+                    <Link to="/admin-dashboard/email">
+                      <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname.startsWith('/admin-dashboard/email') ? 'bg-green-50 text-green-800' : ''}`}>
                         Send Email
                       </NavigationMenuLink>
                     </Link>

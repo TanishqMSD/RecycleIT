@@ -15,6 +15,8 @@ import AdminLogin from '../pages/admin/AdminLogin';
 import Campaigns from '../pages/campaigns/Campaigns';
 import Recyclers from '../pages/info/Recyclers';
 import Blog from '../pages/Blog';
+import BlogDetail from '../pages/BlogDetail';
+import RecyclingGuides from '../pages/guides/RecyclingGuides';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: '/blog',
         element: <Blog />
+      },
+      {
+        path: '/blog/:id',
+        element: <BlogDetail />
       },
       {
         path: 'admin-dashboard',
@@ -76,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: 'scan',
         element: <ScanPage />
+      },
+      {
+        path: '/guides',
+        element: <RecyclingGuides />
       }
     ]
   },

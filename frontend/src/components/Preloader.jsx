@@ -12,13 +12,13 @@ const Preloader = ({ onLoadingComplete }) => {
     const randomFact = eWasteFacts.facts[Math.floor(Math.random() * eWasteFacts.facts.length)];
     setCurrentFact(randomFact);
 
-    // Simulate loading time (3 seconds)
+    // Simulate loading time (5 seconds)
     const timer = setTimeout(() => {
       setIsVisible(false);
       if (onLoadingComplete) {
         onLoadingComplete();
       }
-    }, 3000);
+    }, 6000);
 
     return () => clearTimeout(timer);
   }, [onLoadingComplete]);
@@ -26,12 +26,14 @@ const Preloader = ({ onLoadingComplete }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-      <div className="text-center p-8 max-w-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+      <div className="flex flex-col items-center justify-center text-center p-8 max-w-2xl">
         <motion.div
+          initial={{ rotate: 0 }}
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="mb-8"
+          style={{ transformOrigin: "center" }}
+          className="mb-8 w-24 h-24"
         >
           <img src={logo} alt="RecycleIT Logo" className="w-24 h-24" />
         </motion.div>

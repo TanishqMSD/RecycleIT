@@ -1,7 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 import { connectDB } from './database/connection.js';
+import { apiLimiter } from './middleware/rateLimit.middleware.js';
+import { errorHandler } from './middleware/errorHandler.middleware.js';
 
 
 dotenv.config();
@@ -10,6 +13,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use(morgan('dev')); // Request logging
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -18,6 +22,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply rate limiting to all routes
+app.use('/api', apiLimiter);
 
 // Connect to MongoDB
 connectDB();
@@ -38,11 +45,8 @@ app.use('/api/blogs', blogRoutes);
 
 
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
+// Global error handling middleware
+app.use(errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 5000;
