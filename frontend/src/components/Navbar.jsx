@@ -93,6 +93,13 @@ const Navbar = () => {
                     <span>About</span>
                   </div>
                 </Link>
+                {!isAdminAuthenticated && (
+                  <Link to="/admin-control" className="block py-3 text-lg font-semibold hover:text-green-800 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <span>Admin Login</span>
+                    </div>
+                  </Link>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
@@ -234,7 +241,15 @@ const Navbar = () => {
                     </Link>
                   </NavigationMenuItem>
 
-                  
+                  {!isAdminAuthenticated && (
+                    <NavigationMenuItem>
+                      <Link to="/admin-control">
+                        <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${location.pathname === '/admin-control' ? 'bg-green-50 text-green-800' : ''}`}>
+                          Admin Login
+                        </NavigationMenuLink>
+                      </Link>
+                    </NavigationMenuItem>
+                  )}
                 </>
               )}
 
