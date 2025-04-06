@@ -68,7 +68,7 @@ const router = createBrowserRouter([
         element: <SecureRoute><Analytics /></SecureRoute>
       },
       {
-        path: 'admin-control',
+        path: '/admin-control',
         element: <AdminLogin />
       },
       {
