@@ -38,10 +38,12 @@ app.get('/', (req, res) => {
 import recyclerRoutes from './routes/recycler.routes.js';
 import campaignRoutes from './routes/campaign.routes.js';
 import blogRoutes from './routes/blog.routes.js';
+import ewasteRoutes from './routes/ewaste.routes.js';
 
 app.use('/api/recyclers', recyclerRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/ewaste', ewasteRoutes);
 
 
 

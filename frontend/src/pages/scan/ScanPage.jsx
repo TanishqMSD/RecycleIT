@@ -23,21 +23,35 @@ const ScanPage = () => {
 
   const handleScan = async () => {
     setIsAnalyzing(true);
-    // TODO: Implement AI analysis logic here
-    setTimeout(() => {
-      setScanResult({
-        recyclable: true,
-        components: ['Battery', 'Circuit Board', 'LCD Screen'],
-        environmentalImpact: 'Medium',
-        recyclingInstructions: 'This device can be recycled at certified e-waste facilities.',
-        nearbyRecyclers: [
-          { name: 'EcoRecycle Center', distance: '2.5 miles', rating: 4.5 },
-          { name: 'GreenTech Recycling', distance: '3.8 miles', rating: 4.2 },
-        ],
+    try {
+      const formData = new FormData();
+      const imageFile = await fetch(deviceImage).then(r => r.blob());
+      formData.append('image', imageFile);
+
+      const response = await fetch('http://localhost:3000/api/ewaste/analyze', {
+        method: 'POST',
+        body: formData,
       });
-      setIsAnalyzing(false);
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze image');
+      }
+
+      const analysisResult = await response.json();
+      setScanResult({
+        recyclable: analysisResult.recyclable,
+        components: analysisResult.materials.map(m => `${m.name} (${m.percentage}%) - ${m.toxicity} toxicity`),
+        environmentalImpact: analysisResult.environmentalImpact,
+        recyclingInstructions: analysisResult.recyclingProcess,
+        nearbyRecyclers: analysisResult.nearbyRecyclers,
+      });
       setStep(2);
-    }, 2000);
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+      alert('Failed to analyze image. Please try again.');
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const stepVariants = {
