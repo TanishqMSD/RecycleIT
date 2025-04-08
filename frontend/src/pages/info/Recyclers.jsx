@@ -48,7 +48,7 @@ const Companies = () => {
             setLoading(true);
             console.log("Fetching companies for location:", latitude, longitude);
             
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/recyclers`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/recyclers/nearby`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -135,18 +135,41 @@ const Companies = () => {
         }
     };
 
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    };
+
     const filteredAndSortedCompanies = useMemo(() => {
         let result = [...companies];
 
+        // Filter by search query
         if (searchQuery) {
             result = result.filter(company => 
                 company.name.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
+        // Filter by type
         if (filterType !== "all") {
             result = result.filter(company => company.type === filterType);
         }
+
+        // Filter by distance (100km radius)
+        result = result.filter(company => {
+            const distance = calculateDistance(
+                userLocation[0], userLocation[1],
+                parseFloat(company.latitude), parseFloat(company.longitude)
+            );
+            company.distance = distance; // Add distance to company object
+            return distance <= 100;
+        });
 
         result.sort((a, b) => {
             switch (sortBy) {
@@ -154,6 +177,8 @@ const Companies = () => {
                     return a.name.localeCompare(b.name);
                 case "type":
                     return a.type.localeCompare(b.type);
+                case "distance":
+                    return a.distance - b.distance;
                 default:
                     return 0;
             }
@@ -189,15 +214,20 @@ const Companies = () => {
                     </CardHeader>
                     
                     <CardContent className="p-4 md:p-6 space-y-4">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-                            <div className="space-y-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4 lg:gap-6">
+                            <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
                                 <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/90">
                                     <div className="space-y-3">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <div className="p-2 rounded-lg bg-green-100">
-                                                <MapPin className="w-4 h-4 text-green-700" />
+                                        <div className="flex items-center justify-between gap-2 mb-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="p-2 rounded-lg bg-green-100">
+                                                    <MapPin className="w-4 h-4 text-green-700" />
+                                                </div>
+                                                <h3 className="text-lg font-semibold text-gray-800">Location Settings</h3>
                                             </div>
-                                            <h3 className="text-lg font-semibold text-gray-800">Location Settings</h3>
+                                            {loading && (
+                                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-500 border-t-transparent"></div>
+                                            )}
                                         </div>
                                         <Button
                                             variant={useCurrentLocation ? "default" : "outline"}
@@ -284,19 +314,24 @@ const Companies = () => {
                                 <Alert variant="destructive" className="mb-4">
                                     <AlertDescription>{error}</AlertDescription>
                                 </Alert>
+                            ) : filteredAndSortedCompanies.length === 0 ? (
+                                <div className="col-span-full text-center py-8">
+                                    <p className="text-gray-500">No recycling centers found in this area.</p>
+                                    <p className="text-sm text-gray-400 mt-2">Try selecting a different city or expanding your search.</p>
+                                </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {filteredAndSortedCompanies.map((company, index) => (
                                         <div
                                             key={index}
-                                            className={`bg-white p-4 rounded-lg border border-green-100 hover:shadow-md hover:border-green-200 transition-all cursor-pointer ${
+                                            className={`bg-white/90 backdrop-blur-sm p-4 rounded-lg border border-green-100 hover:shadow-md hover:border-green-200 transition-all cursor-pointer group ${
                                                 selectedCompany === company ? 'ring-2 ring-green-500' : ''
                                             }`}
                                             onClick={() => handleCompanyClick(company)}
                                         >
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <h3 className="text-lg font-semibold text-gray-900">{company.name}</h3>
+                                                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-700 transition-colors">{company.name}</h3>
                                                     <div className="mt-2 flex items-center space-x-2">
                                                         <Badge variant={getBadgeVariant(company.type)}>
                                                             {company.type}
@@ -309,6 +344,11 @@ const Companies = () => {
                                                     <MapPin className="w-3 h-3" />
                                                     <span>Coordinates: {company.latitude.toFixed(4)}, {company.longitude.toFixed(4)}</span>
                                                 </div>
+                                                {company.distance && (
+                                                    <div className="mt-1">
+                                                        Distance: {company.distance.toFixed(1)} km
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
@@ -324,12 +364,28 @@ const Companies = () => {
                             <p className="text-xs text-gray-500">Click on markers to view details</p>
                         </div>
                         <div className="h-[400px]">
+                        {loading ? (
+                            <div className="h-full flex items-center justify-center bg-white/50">
+                                <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent"></div>
+                            </div>
+                        ) : (
                             <MapComponent 
-                                userLocation={userLocation} 
-                                companies={filteredAndSortedCompanies}
-                                selectedCompany={selectedCompany}
+                                center={userLocation}
+                                markers={filteredAndSortedCompanies.map(company => ({
+                                    position: [company.latitude, company.longitude],
+                                    popup: `
+                                        <div class="p-2">
+                                            <h3 class="font-bold">${company.name}</h3>
+                                            <p class="text-sm text-gray-600">${company.type}</p>
+                                            ${company.tags?.phone ? `<p class="text-sm">📞 ${company.tags.phone}</p>` : ''}
+                                            ${company.tags?.website ? `<a href="${company.tags.website}" target="_blank" class="text-sm text-blue-500 hover:text-blue-700">🌐 Website</a>` : ''}
+                                        </div>
+                                    `
+                                }))}
+                                selectedMarker={selectedCompany ? [selectedCompany.latitude, selectedCompany.longitude] : null}
                             />
-                        </div>
+                        )}
+                    </div>
                     </div>
                 </div>
         </div>
