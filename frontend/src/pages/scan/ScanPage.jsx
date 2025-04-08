@@ -13,9 +13,29 @@ const ScanPage = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Check file type
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please upload a valid image file (JPEG, PNG, or JPG)');
+        event.target.value = ''; // Reset input
+        return;
+      }
+
+      // Check file size (10MB limit)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        alert('File size must be less than 10MB');
+        event.target.value = ''; // Reset input
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setDeviceImage(reader.result);
+      };
+      reader.onerror = () => {
+        alert('Error reading file. Please try again.');
+        setDeviceImage(null);
       };
       reader.readAsDataURL(file);
     }
@@ -28,9 +48,13 @@ const ScanPage = () => {
       const imageFile = await fetch(deviceImage).then(r => r.blob());
       formData.append('image', imageFile);
 
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
       const response = await fetch('http://localhost:3000/api/ewaste/analyze', {
         method: 'POST',
         body: formData,
+        signal: controller.signal
       });
 
       if (!response.ok) {
@@ -48,9 +72,14 @@ const ScanPage = () => {
       setStep(2);
     } catch (error) {
       console.error('Error analyzing image:', error);
-      alert('Failed to analyze image. Please try again.');
+      if (error.name === 'AbortError') {
+        alert('Analysis is taking longer than expected. Please try again.');
+      } else {
+        alert('Failed to analyze image. Please try again.');
+      }
     } finally {
       setIsAnalyzing(false);
+      clearTimeout(timeout);
     }
   };
 
