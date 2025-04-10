@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 import { connectDB } from './database/connection.js';
-import authRoutes from './routes/auth.routes.js';
+import { apiLimiter } from './middleware/rateLimit.middleware.js';
+import { errorHandler } from './middleware/errorHandler.middleware.js';
+
 
 dotenv.config();
 
@@ -10,9 +13,18 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(morgan('dev')); // Request logging
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'https://ewasterecycle.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply rate limiting to all routes
+app.use('/api', apiLimiter);
 
 // Connect to MongoDB
 connectDB();
@@ -22,14 +34,21 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to E-waste Management API' });
 });
 
-// Auth routes
-app.use('/api/auth', authRoutes);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
+import recyclerRoutes from './routes/recycler.routes.js';
+import campaignRoutes from './routes/campaign.routes.js';
+import blogRoutes from './routes/blog.routes.js';
+import ewasteRoutes from './routes/ewaste.routes.js';
+
+app.use('/api/recyclers', recyclerRoutes);
+app.use('/api/campaigns', campaignRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/ewaste', ewasteRoutes);
+
+
+
+// Global error handling middleware
+app.use(errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 5000;

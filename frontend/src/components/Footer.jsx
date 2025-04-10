@@ -1,18 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip } from "@/components/ui/tooltip";
 
 const Footer = () => {
-  const ewasteStats = [
-    { icon: '♻️', stat: '57.4M', text: 'Tons of e-waste generated yearly' },
-    { icon: '🌱', stat: '17.4%', text: 'Global recycling rate' },
-    { icon: '💻', stat: '$57B', text: 'Value of raw materials in e-waste' }
-  ];
-
   return (
     <footer className="bg-gradient-to-b from-white to-green-50 pt-16 pb-6 relative overflow-hidden">
       <motion.div 
@@ -28,7 +21,7 @@ const Footer = () => {
         }}
       />
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="space-y-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -45,67 +38,11 @@ const Footer = () => {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {ewasteStats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <div className="text-2xl mb-2">{stat.icon}</div>
-                  <div className="text-xl font-bold text-green-800">{stat.stat}</div>
-                  <div className="text-sm text-gray-600">{stat.text}</div>
-                </motion.div>
-              ))}
+            <div className="flex space-x-4">
+              <Link to="/recyclers" className="text-gray-600 hover:text-green-800 transition-colors">Find Recyclers</Link>
+              <Link to="/guides" className="text-gray-600 hover:text-green-800 transition-colors">Recycling Guides</Link>
+              <Link to="/about" className="text-gray-600 hover:text-green-800 transition-colors">About Us</Link>
             </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-green-800">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-600 hover:text-green-800 transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-600 hover:text-green-800 transition-colors">About Us</Link>
-              </li>
-              <li>
-                <Link to="/recyclers" className="text-gray-600 hover:text-green-800 transition-colors">Find Recyclers</Link>
-              </li>
-              <li>
-                <Link to="/guides" className="text-gray-600 hover:text-green-800 transition-colors">Recycling Guides</Link>
-              </li>
-              <li>
-                <Link to="/quiz" className="text-gray-600 hover:text-green-800 transition-colors">E-Waste Quiz</Link>
-              </li>
-              <li>
-                <Link to="/scan" className="text-gray-600 hover:text-green-800 transition-colors">Scan Device</Link>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-green-800">Resources</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/blog" className="text-gray-600 hover:text-green-800 transition-colors">Blog</Link>
-              </li>
-              <li>
-                <Link to="/faq" className="text-gray-600 hover:text-green-800 transition-colors">FAQ</Link>
-              </li>
-              <li>
-                <Link to="/statistics" className="text-gray-600 hover:text-green-800 transition-colors">E-Waste Statistics</Link>
-              </li>
-              <li>
-                <Link to="/impact" className="text-gray-600 hover:text-green-800 transition-colors">Environmental Impact</Link>
-              </li>
-              <li>
-                <Link to="/partners" className="text-gray-600 hover:text-green-800 transition-colors">Partners</Link>
-              </li>
-            </ul>
           </div>
 
           <div className="space-y-6">
@@ -158,24 +95,8 @@ const Footer = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            {[
-              { to: "/privacy", text: "Privacy" },
-              { to: "/terms", text: "Terms" },
-              { to: "/impact", text: "Our Impact" }
-            ].map((link, index) => (
-              <motion.div
-                key={link.to}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link 
-                  to={link.to} 
-                  className="text-gray-600 hover:text-green-800 text-sm transition-colors"
-                >
-                  {link.text}
-                </Link>
-              </motion.div>
-            ))}
+            <Link to="/privacy" className="text-gray-600 hover:text-green-800 text-sm transition-colors">Privacy</Link>
+            <Link to="/terms" className="text-gray-600 hover:text-green-800 text-sm transition-colors">Terms</Link>
           </motion.div>
         </div>
       </div>

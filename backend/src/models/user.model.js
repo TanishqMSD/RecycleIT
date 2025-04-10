@@ -1,28 +1,16 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
 
 const UserSchema = new mongoose.Schema(
   {
-    username: { type: String, required: true, unique: true, trim: true },
+    name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true },
+    phoneNumber: { type: String, sparse: true },
+    authProvider: { type: String, required: true, enum: ['google', 'email', 'phone'] },
+    password: { type: String, required: function() { return this.authProvider === 'email'; } },
     score: { type: Number, default: 0 },
     pledgeTaken: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
-
-// Hash password before saving
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
-// Compare passwords
-UserSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
 
 export default mongoose.model("User", UserSchema);

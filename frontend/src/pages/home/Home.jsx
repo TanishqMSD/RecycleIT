@@ -103,7 +103,7 @@ const Home = () => {
             <Badge className="mb-4 bg-green-100 text-green-800 hover:bg-green-200 transition-colors">Sustainable Future</Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-800 to-emerald-500">
-                Renew<span className="text-emerald-500">IT</span>
+                Recycle<span className="text-emerald-500">IT</span>
               </span>
               <br />
               <span className="text-gray-800">E-Waste Management</span>
@@ -260,7 +260,7 @@ const Home = () => {
         <div className="container mx-auto px-4 md:px-6">
           <motion.div variants={fadeIn} className="text-center mb-16">
             <Badge className="mb-2 bg-green-100 text-green-800">Our Process</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">How RenewIT Works</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">How RecycleIT Works</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Our platform makes it easy to responsibly manage your electronic waste through a simple three-step process.
             </p>

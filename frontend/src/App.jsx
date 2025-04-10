@@ -1,29 +1,33 @@
-import { Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { auth } from './firebase/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ChatbotPopup from './components/ChatbotPopup';
+import Blog from './pages/Blog';
+import Preloader from './components/Preloader';
+import { wakeupServer } from './utils/wakeupServer';
 
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-    return () => unsubscribe();
+    wakeupServer();
   }, []);
+
   return (
     <div className="min-h-screen bg-white">
-      <Navbar user={user} />
-      <main className="pt-0">
-        <Outlet />
-      </main>
-      <ChatbotPopup />
+      {isLoading ? (
+        <Preloader onLoadingComplete={() => setIsLoading(false)} />
+      ) : (
+        <>
+          <Navbar />
+          <Outlet />
+          <ChatbotPopup />
+        </>
+      )}
     </div>
   );
 };
 
 export default App;
+
