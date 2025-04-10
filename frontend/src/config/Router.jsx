@@ -30,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: 'scan',
         element: <ScanPage />
+      },
+      {
+        path: 'quiz',
+        element: <GameHome />
       }
     ]
   },
